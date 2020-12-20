@@ -208,10 +208,12 @@ func New(cfg *config.Config) (*Server, error) {
 	// Upload handler (serves the upload page)
 	http.HandleFunc("/receive/"+path, func(w http.ResponseWriter, r *http.Request) {
 		htmlVariables := struct {
-			Route string
-			File  string
+			Route    string
+			File     string
+			OpenLink bool
 		}{}
 		htmlVariables.Route = "/receive/" + path
+		htmlVariables.OpenLink = cfg.OpenLink
 		switch r.Method {
 		case "POST":
 			filenames := util.ReadFilenames(app.outputDir)
@@ -230,8 +232,27 @@ func New(cfg *config.Config) (*Server, error) {
 				if err == io.EOF {
 					break
 				}
-				// iIf part.FileName() is empty, skip this iteration.
+				// If part.FileName() is empty, skip this iteration.
 				if part.FileName() == "" {
+					continue
+				}
+				// Handle open link in browser
+				if cfg.OpenLink && part.FileName() == "qrcp-link-file" {
+					// Open link in browser
+					buf := make([]byte, 1024)
+					n, err := part.Read(buf)
+					if err != nil && err != io.EOF {
+						fmt.Fprintf(w, "Unable to read a chunk: %v", err)
+						// Output to console
+						fmt.Printf("Unable to read a chunk: %v", err)
+						// Send signal to server to shutdown
+						app.stopChannel <- true
+						return
+					}
+					if n == 0 {
+						break
+					}
+					openBrowser(string(buf[:n]))
 					continue
 				}
 				// Prepare the destination

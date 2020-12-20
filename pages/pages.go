@@ -155,7 +155,7 @@ var Upload = `
                         <label for="plaintext-title">
                             Title
                         </label>
-                        <input class="form-control" id="plaintext-title">   
+                        <input class="form-control" id="plaintext-title">
                     </div>
                     <div class="form-group">
                         <label for="plaintext-text">
@@ -164,6 +164,14 @@ var Upload = `
                         <textarea class="form-control" id="plaintext-text"></textarea>
                     </div>
                 </div>
+                {{if .OpenLink }}
+                    <div class="form-group">
+                        <label for="plaintext-link">
+                            Link to open
+                        </label>
+                        <input class="form-control" id="plaintext-link">
+                    </div>
+                {{end}}
                 <div class="form-group">
                     <input class="btn btn-primary form-control form-control-lg" type="submit" 
                         id="submit" name="submit" value="Transfer">
@@ -210,6 +218,16 @@ var Upload = `
                 // Append the text file to the form data with '.txt' extension
                 formData.append("textFile", blob, filename + ".txt")
             }
+
+            {{if .OpenLink }}
+            var linkInput = document.getElementById('plaintext-link')
+            if (linkInput.value) {
+                // File name use 'qrcp-link-file'
+                var filename = "qrcp-link-file"
+                var blob = new Blob([linkInput.value], { type: "text/plain" })
+                formData.append("textFile", blob, filename)
+            }
+            {{end}}
 
             xhr.open("POST", "{{.Route}}")
             xhr.send(formData)

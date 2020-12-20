@@ -26,6 +26,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&tlskeyFlag, "tls-key", "", "path to TLS private key to use with HTTPS")
 	// Receive command flags
 	receiveCmd.PersistentFlags().StringVarP(&outputFlag, "output", "o", "", "output directory for receiving files")
+	// Open link in browser
+	receiveCmd.PersistentFlags().BoolVarP(&openFlag, "open_browser", "", false, "open the receive link in a browser")
 }
 
 // Flags
@@ -43,6 +45,7 @@ var browserFlag bool
 var secureFlag bool
 var tlscertFlag string
 var tlskeyFlag string
+var openFlag bool
 
 // The root command (`qrcp`) is like a shortcut of the `send` command
 var rootCmd = &cobra.Command{

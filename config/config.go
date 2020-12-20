@@ -25,6 +25,7 @@ type Config struct {
 	Secure    bool   `json:"secure"`
 	TLSKey    string `json:"tls-key"`
 	TLSCert   string `json:"tls-cert"`
+	OpenLink  bool   `json:"openLink"`
 }
 
 var configFile string
@@ -41,6 +42,7 @@ type Options struct {
 	Secure            bool
 	TLSCert           string
 	TLSKey            string
+	OpenLink          bool
 }
 
 func chooseInterface(opts Options) (string, error) {
@@ -328,6 +330,9 @@ func New(path string, opts Options) (Config, error) {
 	}
 	if opts.TLSKey != "" {
 		cfg.TLSKey = opts.TLSKey
+	}
+	if opts.OpenLink {
+		cfg.OpenLink = opts.OpenLink
 	}
 	return cfg, nil
 }

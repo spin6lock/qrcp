@@ -21,6 +21,7 @@ func receiveCmdFunc(command *cobra.Command, args []string) error {
 		Secure:            secureFlag,
 		TLSCert:           tlscertFlag,
 		TLSKey:            tlskeyFlag,
+		OpenLink:          openFlag,
 	}
 	cfg, err := config.New(configFlag, configOptions)
 	if err != nil {
